@@ -23,7 +23,7 @@ pipeline{
             }
             steps{
                 sh'''
-                aws s3 mb s3://STATE_BUCKET'''
+                aws s3 mb s3://${emv.STATE_BUCKET}'''
             }
         }
 
