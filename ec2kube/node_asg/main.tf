@@ -6,7 +6,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = var.terraform_bucket
+    bucket = "lisaread-terraform-bucket"
     key    = "node_asg/terraform.tfstate"
     region = "us-west-2"
   }
