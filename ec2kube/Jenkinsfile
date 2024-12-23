@@ -32,9 +32,6 @@ pipeline{
             }
         }
 
-    '''# Check if the bucket exists
-    '''
-
         stage("Deploy Ansible Infra"){
             when{
                     environment name:'TERRADESTROY',value:'N'
