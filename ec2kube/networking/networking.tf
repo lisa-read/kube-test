@@ -4,10 +4,10 @@ terraform {
       source = "hashicorp/aws"
     }
   }
-
+  
   backend "s3" {
-    bucket = "<bucket_name>"
-    key    = "<state_key>"
+    bucket = var.terraform_bucket
+    key    = "networking/terraform.tfstate"
     region = "us-west-2"
   }
 }

@@ -6,8 +6,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "<bucket_name>"
-    key    = "<state_file_name>"
+    bucket = var.terraform_bucket
+    key    = "ans_infra/terraform.tfstate"
     region = "us-west-2"
   }
 }
@@ -20,7 +20,6 @@ provider "aws" {
 
 module "s3-bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "2.6.0"
   bucket= var.ansible_bucket
 
   block_public_acls       = true

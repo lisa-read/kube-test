@@ -1,3 +1,6 @@
 variable "ansible_bucket"{
-    default="<bucket_name>"
+    default="lisaread-ansible-bucket"
+}
+variable "terraform_bucket"{
+    default="lisaread-terraform-bucket"
 }

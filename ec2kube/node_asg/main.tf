@@ -6,10 +6,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "<state_bucket>"
-    key    = "<state_key>"
+    bucket = var.terraform_bucket
+    key    = "node_asg/terraform.tfstate"
     region = "us-west-2"
   }
+
 }
 
 provider "aws" {
@@ -54,7 +55,7 @@ resource "aws_launch_configuration" "kube_node_launch_conf" {
   name_prefix   = "kube_node_launch_conf-"
   image_id      = "ami-0e472ba40eb589f49" #us-west-2
   instance_type = "t2.micro"
-  key_name = "<ssh_key_name>"
+  key_name = var.ssh_key_name
   security_groups = [data.aws_security_group.kube_sg_id.id]
   associate_public_ip_address = true
 
