@@ -23,9 +23,17 @@ pipeline{
             }
             steps{
                 sh'''
-                aws s3 mb s3://$STATE_BUCKET'''
+                if aws s3api head-bucket "s3://$STATE_BUCKET" > /dev/null 2>&1; then
+                    echo "Bucket $STATE_BUCKET already exists. Skipping creation."
+                else
+                    echo "Bucket $STATE_BUCKET does not exist. Creating the bucket."
+                    aws s3 mb "s3://$STATE_BUCKET"
+                fi'''
             }
         }
+
+    '''# Check if the bucket exists
+    '''
 
         stage("Deploy Ansible Infra"){
             when{
