@@ -4,12 +4,12 @@ pipeline{
     environment{
         AWS_ACCESS_KEY_ID=credentials('awsaccesskey')
         AWS_SECRET_ACCESS_KEY=credentials('awssecretkey')
-        AWS_DEFAULT_REGION="us-east-1"
+        AWS_DEFAULT_REGION="us-west-2"
         SKIP="N"
         TERRADESTROY="N"
         FIRST_DEPLOY="Y"
-        STATE_BUCKET="<bucket_name>"
-        ANSIBLE_BUCKET_NAME="<ansible_bucket>"
+        STATE_BUCKET="lisaread-terra-bucket"
+        ANSIBLE_BUCKET_NAME="lisaread-ansible-bucket"
     }
 
 
@@ -24,7 +24,6 @@ pipeline{
             steps{
                 sh'''
                 aws s3 mb s3://<bucket_name>'''
-                
             }
         }
 

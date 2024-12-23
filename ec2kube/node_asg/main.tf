@@ -8,12 +8,12 @@ terraform {
   backend "s3" {
     bucket = "<state_bucket>"
     key    = "<state_key>"
-    region = "us-east-1"
+    region = "us-west-2"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
 }
 
 
@@ -52,7 +52,7 @@ data "aws_security_group" "kube_sg_id" {
 
 resource "aws_launch_configuration" "kube_node_launch_conf" {
   name_prefix   = "kube_node_launch_conf-"
-  image_id      = "ami-0e472ba40eb589f49" #us-east-1
+  image_id      = "ami-0e472ba40eb589f49" #us-west-2
   instance_type = "t2.micro"
   key_name = "<ssh_key_name>"
   security_groups = [data.aws_security_group.kube_sg_id.id]

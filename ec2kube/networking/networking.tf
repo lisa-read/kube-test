@@ -8,12 +8,12 @@ terraform {
   backend "s3" {
     bucket = "<bucket_name>"
     key    = "<state_key>"
-    region = "us-east-1"
+    region = "us-west-2"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
 }
 
 
@@ -190,7 +190,7 @@ resource "aws_route_table" "kube_rt" {
 resource "aws_subnet" "kube_subnet" {
   vpc_id     = resource.aws_vpc.kubevpc.id
   cidr_block = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
+  availability_zone = "us-west-2a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -201,7 +201,7 @@ resource "aws_subnet" "kube_subnet" {
 resource "aws_subnet" "kube_subnet_2" {
   vpc_id     = resource.aws_vpc.kubevpc.id
   cidr_block = "10.0.2.0/24"
-  availability_zone = "us-east-1b"
+  availability_zone = "us-west-2b"
   map_public_ip_on_launch = true
 
   tags = {

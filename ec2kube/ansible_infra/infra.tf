@@ -8,12 +8,12 @@ terraform {
   backend "s3" {
     bucket = "<bucket_name>"
     key    = "<state_file_name>"
-    region = "us-east-1"
+    region = "us-west-2"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
 }
 
 
