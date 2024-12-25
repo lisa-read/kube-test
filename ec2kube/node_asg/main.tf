@@ -50,10 +50,31 @@ data "aws_security_group" "kube_sg_id" {
 #   most_recent = true
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = [ "amazon" ]
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
 
 resource "aws_launch_configuration" "kube_node_launch_conf" {
   name_prefix   = "kube_node_launch_conf-"
-  image_id      = "ami-0e472ba40eb589f49" #us-west-2
+  image_id      = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   key_name = var.ssh_key_name
   security_groups = [data.aws_security_group.kube_sg_id.id]
