@@ -1,21 +1,40 @@
 ---
-
-- name: add GPG key
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-- name: Add specified repository into sources list
-  apt_repository:
-    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-- name: Run the equivalent of "apt-get update" as a separate step
+- name: Update Apt cache
+  apt:
+    update_cache: yes
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    loop:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gpg
+- name: Create keyrings dir
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+- name: Download and add K8s
+  shell: |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  args:
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+- name: Add Kubernetes repository to sources list
+  copy:
+    content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /\n"
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    mode: '0644'
+    owner: root
+    group: root
+- name: Update Apt Cache
   apt:
     update_cache: yes
 - name: Install kube and kubectl
   apt:
     name: "{{ item }}"
     state: latest
-    #update_cache: yes
   loop:
     - kubelet
     - kubeadm
