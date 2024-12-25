@@ -53,7 +53,7 @@ resource "aws_instance" "kube_dash_instance" {
     device_index         = 0
   }
   availability_zone = "us-west-2a"
-  key_name = var.kubeClusterTest
+  key_name = var.ssh_key_name
 
   tags= {
     Name = "KubeCtrlPlane"
