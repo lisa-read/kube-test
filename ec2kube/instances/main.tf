@@ -44,8 +44,29 @@ resource "aws_network_interface" "kube_instance_eni" {
   
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = [ "amazon" ]
+  filter {
+    name   = "name"
+    values = ["Ubuntu"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
 resource "aws_instance" "kube_dash_instance" {
-  ami           = "ami-0e472ba40eb589f49" # us-west-2
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.medium"
 
   network_interface {
