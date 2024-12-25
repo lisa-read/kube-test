@@ -41,7 +41,7 @@
         line: "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
 
     - name: Upload node inventory file to S3
-      amazon.aws.s3:
+      amazon.aws.s3_object:
         region: "us-west-2"
         bucket: "{{ lookup('env', 'ANSIBLE_BUCKET_NAME') }}"
         mode: put
