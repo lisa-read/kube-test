@@ -37,12 +37,6 @@ data "aws_security_group" "kube_sg_id" {
 #   most_recent = true
 }
 
-resource "aws_key_pair" "kube_cp_key" {
-  key_name   = "etkube-cp-instance-key"
-  public_key = "<ssh_key>"
-}
-
-
 resource "aws_network_interface" "kube_instance_eni" {
   subnet_id       = data.aws_subnet.kube_subnet_id.id
   security_groups = [data.aws_security_group.kube_sg_id.id]
@@ -59,7 +53,7 @@ resource "aws_instance" "kube_dash_instance" {
     device_index         = 0
   }
   availability_zone = "us-west-2a"
-  key_name = resource.aws_key_pair.kube_cp_key.key_name
+  key_name = var.kubeClusterTest
 
   tags= {
     Name = "KubeCtrlPlane"
