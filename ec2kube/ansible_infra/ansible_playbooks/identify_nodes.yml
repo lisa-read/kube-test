@@ -3,43 +3,47 @@
   become: true
   connection: local
   tasks:
-    - name: get ec2
-      ec2_instance_facts:
-        aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-        aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-        ec2_region: "us-west-2"
+    - name: Get EC2 instances with instancemode:node
+      amazon.aws.ec2_instance_info:
+        region: "us-west-2"
         filters:
-          tag:instancemode: node
+          "tag:instancemode": "node"
       register: ec2_facts
-    - debug:
+
+    - name: Debug EC2 instance public DNS
+      debug:
         var: ec2_facts.instances[0].public_dns_name
-    - name: add ec2 ip to inv file
+
+    - name: Add EC2 IPs to node inventory file
       lineinfile:
         path: ./nodeinv
         line: "{{ item.public_dns_name }}"
       loop: "{{ ec2_facts.instances }}"
-    - name: add vars section
+
+    - name: Add [kubenodes:vars] section
       lineinfile:
         path: ./nodeinv
         line: "[kubenodes:vars]"
-    - name: add ansible user line
+
+    - name: Add ansible_user line
       lineinfile:
         path: ./nodeinv
         line: "ansible_user=ubuntu"
-    - name: add ansible key line
+
+    - name: Add ansible_ssh_private_key_file line
       lineinfile:
         path: ./nodeinv
         line: "ansible_ssh_private_key_file=/var/lib/jenkins/id_rsa"
-    - name: add ssh args line
+
+    - name: Add ansible_ssh_common_args line
       lineinfile:
         path: ./nodeinv
         line: "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
-    - name: update inv file
-      aws_s3:
-        aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-        aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-        ec2_region: "us-west-2"
+
+    - name: Upload node inventory file to S3
+      amazon.aws.s3:
+        region: "us-west-2"
         bucket: "{{ lookup('env', 'ANSIBLE_BUCKET_NAME') }}"
         mode: put
-        object: /nodeinv
+        object: nodeinv
         src: ./nodeinv
