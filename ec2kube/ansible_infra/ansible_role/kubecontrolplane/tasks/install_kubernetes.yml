@@ -2,15 +2,13 @@
 - name: Update Apt cache
   apt:
     update_cache: yes
-- name: Install packages
+- name: Install a list of packages
   apt:
-    name: "{{ item }}"
-    state: latest
-    loop:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - gpg
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gpg
 - name: Create keyrings dir
   file:
     path: /etc/apt/keyrings
@@ -33,9 +31,7 @@
     update_cache: yes
 - name: Install kube and kubectl
   apt:
-    name: "{{ item }}"
-    state: latest
-  loop:
+    pkg:
     - kubelet
     - kubeadm
     - kubectl
