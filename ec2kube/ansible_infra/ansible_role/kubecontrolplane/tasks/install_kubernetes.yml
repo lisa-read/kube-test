@@ -2,6 +2,7 @@
 - name: Update Apt cache
   apt:
     update_cache: yes
+
 - name: Install a list of packages
   apt:
     pkg:
@@ -9,16 +10,19 @@
     - ca-certificates
     - curl
     - gpg
+
 - name: Create keyrings dir
   file:
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
+
 - name: Download and add K8s
   shell: |
     curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
   args:
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
 - name: Add Kubernetes repository to sources list
   copy:
     content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /\n"
@@ -26,22 +30,27 @@
     mode: '0644'
     owner: root
     group: root
+
 - name: Update Apt Cache
   apt:
     update_cache: yes
+
 - name: Install kube and kubectl
   apt:
     pkg:
     - kubelet
     - kubeadm
     - kubectl
+
 - name: swapoff for kubernetes
   command: swapoff -a
+
 - name: update docker file system
   template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
   notify: docker service
+
 - name: restart docker
   command: systemctl restart docker
 
@@ -51,8 +60,14 @@
 - name: restart containerd
   command: systemctl restart containerd
 
+- name: check kube state
+  command: kubectl cluster-info
+
+- name: reset kube
+  command: kubeadm reset
+
 - name: run kubeadm init
-  command: kubeadm init --pod-network-cidr=10.244.0.0/16
+  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --v=5
 
 - name: save kubeconfig file
   command: mkdir -p $HOME/.kube
@@ -60,8 +75,6 @@
 - name: copy kubeconfig file
   command: cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 
-#- name: change permission for kubeconfig file
- # command: chown $(id -u):$(id -g) $HOME/.kube/config
 - name: change permission for kubeconfig file
   file:
     path: $HOME/.kube/config 
