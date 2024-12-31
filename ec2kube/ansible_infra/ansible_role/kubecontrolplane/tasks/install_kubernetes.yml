@@ -57,9 +57,6 @@
 - name: remove containerd config
   command: rm -f /etc/containerd/config.toml
 
-- name: restart containerd
-  command: systemctl restart containerd
-
 - name: run kubeadm init
   command: kubeadm init --v=5
 
